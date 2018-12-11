@@ -38,6 +38,7 @@ class Pawn:
   def __init__(self, iColour):
     Piece.__init__(self, iColour)
     self.iPiece = PAWN_ENUM
+    self.bMoved = False
     
 class Rook:
   def __init__(self, iColour):
