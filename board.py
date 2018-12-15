@@ -8,6 +8,35 @@ SQUARE_SIZE = 60
 # global variables
 Board = [[]]
 
+class Square:
+  piece = None
+
+  def __init__(self, x, y):
+    self.x = x
+    self.y = y   
+    
+    # auto select the piece
+    if (y >= 2 and y <= 5):
+      # no piece
+      return 
+    # determine colour first
+    colour = 1
+    if (y <= 1):
+      colour = 0
+    # now the piece type
+    if (y == 1 or y == 6):
+      self.piece = p.Pawn(colour)
+    elif (x == 0 or x == 7):
+      self.piece = p.Rook(colour)
+    elif (x == 1 or x == 6):
+      self.piece = p.Knight(colour)
+    elif (x == 2 or x == 5):
+      self.piece = p.Bishop(colour)
+    elif (x == 3):
+      self.piece = p.Queen(colour)
+    else:
+      self.piece = p.King(colour)
+
 # draws a section of the board, with a piece if applicable
 def drawSquare(i, j):
   screen = pygame.display.get_surface() 
@@ -18,15 +47,15 @@ def drawSquare(i, j):
   gridRect = pygame.Rect(i*SQUARE_SIZE+offsetw,
     j*SQUARE_SIZE+offseth,SQUARE_SIZE,SQUARE_SIZE)
   # draw the grid
-  if ((i + j) % 2 == 0):
+  if ((i + j) % 2 == 1):
     # draw a darker square every other square
     pygame.draw.rect(screen, (150,150,150), gridRect)
   pygame.draw.rect(screen, (0,0,0), gridRect, 1)
   
-  if (Board[i][j] != None):
+  if (Board[i][j].piece != None):
     # draw the piece
-    colour = Board[i][j].iColour
-    piece = Board[i][j].iPiece
+    colour = Board[i][j].piece.iColour
+    piece = Board[i][j].piece.iPiece
     pygame.Surface.blit(screen, p.PieceImages[colour][piece], gridRect)
   pygame.display.update(gridRect)
 
@@ -42,36 +71,15 @@ def drawBoard():
 # resets all the pieces on the board and draws it 
 def resetBoard():
   global Board
-  # pawns
+  
+  # all squares
   for i in range(8):
-    Board[i][1] = p.Pawn(0)
-    Board[i][6] = p.Pawn(1)
-  # rooks
-  Board[0][0] = p.Rook(0)
-  Board[7][0] = p.Rook(0)
-  Board[0][7] = p.Rook(1)
-  Board[7][7] = p.Rook(1)
-  # knights
-  Board[1][0] = p.Knight(0)
-  Board[6][0] = p.Knight(0)
-  Board[1][7] = p.Knight(1)
-  Board[6][7] = p.Knight(1)
-  # bishops
-  Board[2][0] = p.Bishop(0)
-  Board[5][0] = p.Bishop(0)
-  Board[2][7] = p.Bishop(1)
-  Board[5][7] = p.Bishop(1)
-  # queens
-  Board[3][0] = p.Queen(0)
-  Board[4][7] = p.Queen(1)
-  # kings
-  Board[4][0] = p.King(0)
-  Board[3][7] = p.King(1)
-  # None
-  for i in range(2, 6):
     for j in range(8):
-      Board[j][i] = None
+      Board[i][j] = Square(i,j)  
   drawBoard()
+  
+def squareClicked(i, j):
+  print("x ",i,", y ",j)
   
 def initBoard():
   global Board
