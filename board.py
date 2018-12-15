@@ -2,6 +2,13 @@ import pygame
 
 import pieces as p
 
+# enum defines
+# square status
+NONE_ENUM = 0
+SELECTED_ENUM = 1
+INRANGE_ENUM = 2
+THREATENDED_ENUM = 3
+
 # global constants
 SQUARE_SIZE = 60
 
@@ -10,6 +17,7 @@ Board = [[]]
 
 class Square:
   piece = None
+  status = NONE_ENUM
 
   def __init__(self, x, y):
     self.x = x
@@ -47,9 +55,16 @@ def drawSquare(i, j):
   gridRect = pygame.Rect(i*SQUARE_SIZE+offsetw,
     j*SQUARE_SIZE+offseth,SQUARE_SIZE,SQUARE_SIZE)
   # draw the grid
-  if ((i + j) % 2 == 1):
-    # draw a darker square every other square
+  if (Board[i][j].status == SELECTED_ENUM):
+    pygame.draw.rect(screen, (255,255,0), gridRect)
+  elif (Board[i][j].status == INRANGE_ENUM):
+    pygame.draw.rect(screen, (0,255,255), gridRect)
+  elif (Board[i][j].status == THREATENDED_ENUM):
+    pygame.draw.rect(screen, (255,0,0), gridRect)
+  elif ((i + j) % 2 == 1):
     pygame.draw.rect(screen, (150,150,150), gridRect)
+  else:
+    pygame.draw.rect(screen, (255,255,255), gridRect)
   pygame.draw.rect(screen, (0,0,0), gridRect, 1)
   
   if (Board[i][j].piece != None):
@@ -78,8 +93,31 @@ def resetBoard():
       Board[i][j] = Square(i,j)  
   drawBoard()
   
+# returns the the selected square
+# returns None if none are selected
+def getSelected():
+  # cycle over the squares
+  for i in range(8):
+    for j in range(8):
+      if (Board[i][j].status == SELECTED_ENUM):
+        return Board[i][j]
+  return None
+  
 def squareClicked(i, j):
-  print("x ",i,", y ",j)
+  global Board
+  if (Board[i][j].status == SELECTED_ENUM):
+    # square already selected, deselect
+    Board[i][j].status = NONE_ENUM
+  elif (Board[i][j].piece != None and
+    Board[i][j].piece.iColour == 1):
+    # deselect any old squares
+    selected = getSelected()
+    if (selected != None):
+      squareClicked(selected.x, selected.y)
+    # select this one
+    Board[i][j].status = SELECTED_ENUM
+  
+  drawSquare(i, j)
   
 def initBoard():
   global Board
