@@ -11,8 +11,12 @@ Board = [[]]
 # draws a section of the board, with a piece if applicable
 def drawSquare(i, j):
   screen = pygame.display.get_surface() 
+  # get the offsets
+  offsetw = (screen.get_width() - SQUARE_SIZE*8) / 2
+  offseth = (screen.get_height() - SQUARE_SIZE*8) / 2
   # get the rectangle
-  gridRect = pygame.Rect(i*SQUARE_SIZE,j*SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE)
+  gridRect = pygame.Rect(i*SQUARE_SIZE+offsetw,
+    j*SQUARE_SIZE+offseth,SQUARE_SIZE,SQUARE_SIZE)
   # draw the grid
   if ((i + j) % 2 == 0):
     # draw a darker square every other square
