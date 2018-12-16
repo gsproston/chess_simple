@@ -86,22 +86,21 @@ def drawBoard():
 # resets all the pieces on the board and draws it 
 def resetBoard():
   global Board
-  
   # all squares
   for i in range(8):
     for j in range(8):
       Board[i][j] = Square(i,j)  
   drawBoard()
   
-# returns the the selected square
-# returns None if none are selected
-def getSelected():
-  # cycle over the squares
+# clears all highlighting
+def clearHighlighting():
+  global Board
+  # cycle over all sqaures
   for i in range(8):
     for j in range(8):
-      if (Board[i][j].status == SELECTED_ENUM):
-        return Board[i][j]
-  return None
+      if (Board[i][j].status != NONE_ENUM):
+        Board[i][j].status = NONE_ENUM
+        drawSquare(i,j)
   
 def squareClicked(i, j):
   global Board
@@ -111,11 +110,19 @@ def squareClicked(i, j):
   elif (Board[i][j].piece != None and
     Board[i][j].piece.iColour == 1):
     # deselect any old squares
-    selected = getSelected()
-    if (selected != None):
-      squareClicked(selected.x, selected.y)
+    clearHighlighting()
     # select this one
     Board[i][j].status = SELECTED_ENUM
+    
+    # get the list of moves
+    for coord in Board[i][j].piece.getMoves(i, j, Board):
+      x = coord[0]
+      y = coord[1]
+      if (Board[x][y].piece == None):
+        Board[x][y].status = INRANGE_ENUM
+      else:
+        Board[x][y].status = THREATENDED_ENUM
+      drawSquare(x,y)
   
   drawSquare(i, j)
   

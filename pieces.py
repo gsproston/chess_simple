@@ -32,6 +32,16 @@ def LoadPieceImages():
 class Piece:
   def __init__(self, iColour):
     self.iColour = iColour
+  
+  # removes any moves that target the same colour  
+  def trimMoves(self, Moves, Board):
+    for m in Moves:
+      x = m[0]
+      y = m[1]
+      if (Board[x][y].piece != None and 
+          Board[x][y].piece.iColour == self.iColour):
+        Moves.remove(m)
+    return Moves    
 
 # subclasses
 class Pawn:
@@ -40,27 +50,80 @@ class Pawn:
     self.iPiece = PAWN_ENUM
     self.bMoved = False
     
+  def getMoves(self, x, y, Board):
+    Moves = []
+    if (y > 0 and Board[x][y-1].piece == None):
+      Moves.append((x, y-1))
+    if (y > 1 and not self.bMoved
+      and Board[x][y-2].piece == None):
+      Moves.append((x, y-2))
+    if (y > 0 and x > 0 and Board[x-1][y-1].piece != None):
+      Moves.append((x-1, y-1))
+    if (y > 0 and x < 7 and Board[x+1][y-1].piece != None):
+      Moves.append((x+1, y-1))
+      
+    Moves = Piece.trimMoves(self, Moves, Board)
+    return Moves
+    
 class Rook:
   def __init__(self, iColour):
     Piece.__init__(self, iColour)
     self.iPiece = ROOK_ENUM
+    
+  def getMoves(self, x, y, Board):
+    Moves = []
+    return Moves
     
 class Knight:
   def __init__(self, iColour):
     Piece.__init__(self, iColour)
     self.iPiece = KNIGHT_ENUM
     
+  def getMoves(self, x, y, Board):
+    Moves = []
+    if (y > 1 and x > 0):
+      Moves.append((x-1, y-2))
+    if (y > 1 and x < 7):
+      Moves.append((x+1, y-2))
+    if (y < 6 and x > 0):
+      Moves.append((x-1, y+2))
+    if (y < 6 and x < 7):
+      Moves.append((x+1, y+2))
+    if (x > 1 and y > 0):
+      Moves.append((x-2, y-1))
+    if (x > 1 and y < 7):
+      Moves.append((x-2, y+1))
+    if (x < 6 and y > 0):
+      Moves.append((x+2, y-1))
+    if (x < 6 and y < 7):
+      Moves.append((x+2, y+1))
+      
+    Moves = Piece.trimMoves(self, Moves, Board)
+    return Moves
+    
 class Bishop:
   def __init__(self, iColour):
     Piece.__init__(self, iColour)
     self.iPiece = BISHOP_ENUM
+    
+  def getMoves(self, x, y, Board):
+    Moves = []
+    return Moves
     
 class Queen:
   def __init__(self, iColour):
     Piece.__init__(self, iColour)
     self.iPiece = QUEEN_ENUM
     
+  def getMoves(self, x, y, Board):
+    Moves = []
+    return Moves
+    
 class King:
   def __init__(self, iColour):
     Piece.__init__(self, iColour)
     self.iPiece = KING_ENUM
+    
+  def getMoves(self, x, y, Board):
+    Moves = []
+    return Moves
