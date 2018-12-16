@@ -127,6 +127,31 @@ class Bishop:
     
   def getMoves(self, x, y, Board):
     Moves = []
+    offset = 1
+    while (x-offset >= 0 and y-offset >= 0):
+      Moves.append((x-offset, y-offset))
+      if (Board[x-offset][y-offset].piece != None):
+        break;
+      offset += 1
+    offset = 1
+    while (x-offset >= 0 and y+offset <= 7):
+      Moves.append((x-offset, y+offset))
+      if (Board[x-offset][y+offset].piece != None):
+        break;
+      offset += 1
+    offset = 1
+    while (x+offset <= 7 and y-offset >= 0):
+      Moves.append((x+offset, y-offset))
+      if (Board[x+offset][y-offset].piece != None):
+        break;
+      offset += 1
+    offset = 1
+    while (x+offset <= 7 and y+offset <= 7):
+      Moves.append((x+offset, y+offset))
+      if (Board[x+offset][y+offset].piece != None):
+        break;
+      offset += 1
+    
     Moves = Piece.trimMoves(self, Moves, Board)
     return Moves
     
