@@ -101,12 +101,27 @@ def clearHighlighting():
       if (Board[i][j].status != NONE_ENUM):
         Board[i][j].status = NONE_ENUM
         drawSquare(i,j)
+        
+# returns the 
+def movePiece(x, y):
+  global Board
+  # cycle over all sqaures
+  for i in range(8):
+    for j in range(8):
+      if (Board[i][j].status == SELECTED_ENUM):
+        # move this piece
+        Board[x][y].piece = Board[i][j].piece
+        Board[i][j].piece = None
+        clearHighlighting()
   
 def squareClicked(i, j):
   global Board
   if (Board[i][j].status == SELECTED_ENUM):
     # square already selected, deselect
     Board[i][j].status = NONE_ENUM
+  elif (Board[i][j].status == INRANGE_ENUM):
+    # moves the selected piece to this square
+    movePiece(i,j)
   elif (Board[i][j].piece != None and
     Board[i][j].piece.iColour == 1):
     # deselect any old squares
