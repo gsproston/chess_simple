@@ -1,13 +1,7 @@
 import pygame
-
+import ai
 import pieces as p
-
-# enum defines
-# square status
-NONE_ENUM = 0
-SELECTED_ENUM = 1
-INRANGE_ENUM = 2
-THREATENDED_ENUM = 3
+import enumerations as e
 
 # global constants
 SQUARE_SIZE = 60
@@ -17,7 +11,7 @@ Board = [[]]
 
 class Square:
   piece = None
-  status = NONE_ENUM
+  status = e.NONE_ENUM
 
   def __init__(self, x, y):
     self.x = x
@@ -55,11 +49,11 @@ def drawSquare(x, y):
   gridRect = pygame.Rect(x*SQUARE_SIZE+offsetw,
     y*SQUARE_SIZE+offseth,SQUARE_SIZE,SQUARE_SIZE)
   # draw the grid
-  if (Board[x][y].status == SELECTED_ENUM):
+  if (Board[x][y].status == e.SELECTED_ENUM):
     pygame.draw.rect(screen, (255,255,0), gridRect)
-  elif (Board[x][y].status == INRANGE_ENUM):
+  elif (Board[x][y].status == e.INRANGE_ENUM):
     pygame.draw.rect(screen, (0,255,255), gridRect)
-  elif (Board[x][y].status == THREATENDED_ENUM):
+  elif (Board[x][y].status == e.THREATENDED_ENUM):
     pygame.draw.rect(screen, (255,0,0), gridRect)
   elif ((x + y) % 2 == 1):
     pygame.draw.rect(screen, (150,150,150), gridRect)
@@ -98,51 +92,68 @@ def clearHighlighting():
   # cycle over all sqaures
   for i in range(8):
     for j in range(8):
-      if (Board[i][j].status != NONE_ENUM):
-        Board[i][j].status = NONE_ENUM
+      if (Board[i][j].status != e.NONE_ENUM):
+        Board[i][j].status = e.NONE_ENUM
         drawSquare(i,j)
         
-# returns the 
+# returns true if a piece was moved
 def movePiece(x, y):
   global Board
   # cycle over all sqaures
   for i in range(8):
     for j in range(8):
-      if (Board[i][j].status == SELECTED_ENUM):
+      if (Board[i][j].status == e.SELECTED_ENUM):
         # move this piece
         Board[x][y].piece = Board[i][j].piece
         Board[i][j].piece = None
         Board[x][y].piece.bMoved = True
         clearHighlighting()
-  
+        return True
+  return False
+
+# returns true if the click takes a turn
 def squareClicked(x, y):
   global Board
-  if (Board[x][y].status == SELECTED_ENUM):
+  bMoved = False
+  
+  if (Board[x][y].status == e.SELECTED_ENUM):
     # square already selected, deselect
-    Board[x][y].status = NONE_ENUM
+    Board[x][y].status = e.NONE_ENUM
     clearHighlighting()
-  elif (Board[x][y].status == INRANGE_ENUM or
-        Board[x][y].status == THREATENDED_ENUM):
+  elif (Board[x][y].status == e.INRANGE_ENUM or
+        Board[x][y].status == e.THREATENDED_ENUM):
     # moves the selected piece to this square
-    movePiece(x,y)
+    bMoved = movePiece(x,y)    
   elif (Board[x][y].piece != None and
     Board[x][y].piece.iColour == 1):
     # deselect any old squares
     clearHighlighting()
     # select this one
-    Board[x][y].status = SELECTED_ENUM
+    Board[x][y].status = e.SELECTED_ENUM
     
     # get the list of moves
     for coord in Board[x][y].piece.getMoves(x, y, Board):
       xpos = coord[0]
       ypos = coord[1]
       if (Board[xpos][ypos].piece == None):
-        Board[xpos][ypos].status = INRANGE_ENUM
+        Board[xpos][ypos].status = e.INRANGE_ENUM
       else:
-        Board[xpos][ypos].status = THREATENDED_ENUM
+        Board[xpos][ypos].status = e.THREATENDED_ENUM
       drawSquare(xpos,ypos)
   
   drawSquare(x, y)
+  return bMoved
+  
+# returns true if the AI was able to play
+def takeTurn():
+  m = ai.getBestMove(Board)
+  if (m == None):
+    return False
+  Board[m.movex][m.movey].piece = Board[m.x][m.y].piece
+  Board[m.x][m.y].piece = None
+  drawSquare(m.x, m.y)
+  drawSquare(m.movex, m.movey)
+  return True
   
 def initBoard():
   global Board

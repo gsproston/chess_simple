@@ -8,8 +8,10 @@ import board as b
 FPS = 30
 
 # global variables
-shutdown = False
+bShutdown = False
+bWhiteTurn = True
 
+# returns true if this takes a turn
 def processClick():
   x = pygame.mouse.get_pos()[0]
   y = pygame.mouse.get_pos()[1]
@@ -26,18 +28,20 @@ def processClick():
     y -= offseth
     x /= b.SQUARE_SIZE
     y /= b.SQUARE_SIZE
-    b.squareClicked(int(x), int(y))
+    return b.squareClicked(int(x), int(y))
+  return False
     
 def listenOnEvents():
-  global shutdown, paused
+  global bShutdown, bWhiteTurn
   for event in pygame.event.get(): #runs when an event occurs
     if event.type == QUIT: #quit called
-      shutdown = True #end loop
+      bShutdown = True #end loop
     elif event.type == MOUSEBUTTONDOWN: #mouse clicked
-      processClick()
+      if (processClick()):
+        bWhiteTurn = False
     elif event.type == KEYDOWN: #key has been pressed
       if pygame.key.get_pressed()[pygame.K_ESCAPE]:
-        shutdown = True #end loop  
+        bShutdown = True #end loop  
     
 if __name__ == "__main__":
   pygame.init()
@@ -47,8 +51,11 @@ if __name__ == "__main__":
   b.initBoard()
 
   #main game loop
-  while (not shutdown):
+  while (not bShutdown):
     listenOnEvents()
+    if (not bWhiteTurn):
+      b.takeTurn()
+      bWhiteTurn = True
     clock.tick(FPS) #update x times a second, determines FPS
 
   #main loop ends, exit

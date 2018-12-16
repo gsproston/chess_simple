@@ -1,0 +1,19 @@
+# enum defines
+
+# colours 
+BLACK_ENUM = 0
+WHITE_ENUM = 1
+
+# pieces
+PAWN_ENUM = 0
+ROOK_ENUM = 1
+KNIGHT_ENUM = 2
+BISHOP_ENUM = 3
+QUEEN_ENUM = 4
+KING_ENUM = 5
+
+# square status
+NONE_ENUM = 0
+SELECTED_ENUM = 1
+INRANGE_ENUM = 2
+THREATENDED_ENUM = 3
