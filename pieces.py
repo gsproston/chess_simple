@@ -36,12 +36,8 @@ class Piece:
   
   # removes any moves that target the same colour  
   def trimMoves(self, Moves, Board):
-    for m in Moves:
-      x = m[0]
-      y = m[1]
-      if (Board[x][y].piece != None and 
-          Board[x][y].piece.iColour == self.iColour):
-        Moves.remove(m)
+    Moves = [m for m in Moves if (Board[m[0]][m[1]].piece == None or 
+      Board[m[0]][m[1]].piece.iColour != self.iColour)]
     return Moves    
 
 # subclasses
@@ -161,8 +157,9 @@ class Queen:
     self.iPiece = QUEEN_ENUM
     
   def getMoves(self, x, y, Board):
-    Moves = []
-    Moves = Piece.trimMoves(self, Moves, Board)
+    # combo of rook and bishop moves
+    Moves = Rook.getMoves(self, x, y, Board)
+    Moves.extend(Bishop.getMoves(self, x, y, Board))
     return Moves
     
 class King:
