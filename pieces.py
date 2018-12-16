@@ -32,6 +32,7 @@ def LoadPieceImages():
 class Piece:
   def __init__(self, iColour):
     self.iColour = iColour
+    self.bMoved = False
   
   # removes any moves that target the same colour  
   def trimMoves(self, Moves, Board):
@@ -48,7 +49,6 @@ class Pawn:
   def __init__(self, iColour):
     Piece.__init__(self, iColour)
     self.iPiece = PAWN_ENUM
-    self.bMoved = False
     
   def getMoves(self, x, y, Board):
     Moves = []
@@ -57,6 +57,7 @@ class Pawn:
     if (y > 1 and not self.bMoved
       and Board[x][y-2].piece == None):
       Moves.append((x, y-2))
+    # taking pieces
     if (y > 0 and x > 0 and Board[x-1][y-1].piece != None):
       Moves.append((x-1, y-1))
     if (y > 0 and x < 7 and Board[x+1][y-1].piece != None):

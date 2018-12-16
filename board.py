@@ -112,6 +112,7 @@ def movePiece(x, y):
         # move this piece
         Board[x][y].piece = Board[i][j].piece
         Board[i][j].piece = None
+        Board[x][y].piece.bMoved = True
         clearHighlighting()
   
 def squareClicked(x, y):
