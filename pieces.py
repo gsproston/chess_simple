@@ -73,6 +73,24 @@ class Rook:
     
   def getMoves(self, x, y, Board):
     Moves = []
+    for i in range(x+1, 8):
+      Moves.append((i, y))
+      if (Board[i][y].piece != None):
+        break
+    for i in range(x-1, -1, -1):
+      Moves.append((i, y))
+      if (Board[i][y].piece != None):
+        break
+    for i in range(y+1, 8):
+      Moves.append((x, i))
+      if (Board[x][i].piece != None):
+        break
+    for i in range(y-1, -1, -1):
+      Moves.append((x, i))
+      if (Board[x][i].piece != None):
+        break
+    
+    Moves = Piece.trimMoves(self, Moves, Board)
     return Moves
     
 class Knight:
@@ -109,6 +127,7 @@ class Bishop:
     
   def getMoves(self, x, y, Board):
     Moves = []
+    Moves = Piece.trimMoves(self, Moves, Board)
     return Moves
     
 class Queen:
@@ -118,6 +137,7 @@ class Queen:
     
   def getMoves(self, x, y, Board):
     Moves = []
+    Moves = Piece.trimMoves(self, Moves, Board)
     return Moves
     
 class King:
@@ -127,4 +147,5 @@ class King:
     
   def getMoves(self, x, y, Board):
     Moves = []
+    Moves = Piece.trimMoves(self, Moves, Board)
     return Moves
