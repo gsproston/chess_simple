@@ -169,5 +169,12 @@ class King:
     
   def getMoves(self, x, y, Board):
     Moves = []
+    for i in range (-1, 2):
+      for j in range (-1, 2):
+        if ((i == 0 and j == 0) or
+            x+i > 7 or x+i < 0 or
+            y+j > 7 or y+j < 0):
+          continue
+        Moves.append((x+i, y+j))
     Moves = Piece.trimMoves(self, Moves, Board)
     return Moves
