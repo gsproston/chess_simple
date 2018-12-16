@@ -120,6 +120,7 @@ def squareClicked(x, y):
   if (Board[x][y].status == SELECTED_ENUM):
     # square already selected, deselect
     Board[x][y].status = NONE_ENUM
+    clearHighlighting()
   elif (Board[x][y].status == INRANGE_ENUM or
         Board[x][y].status == THREATENDED_ENUM):
     # moves the selected piece to this square
