@@ -148,7 +148,7 @@ def initBoard():
   global Board
 
   # load the images
-  p.LoadPieceImages()
+  p.loadPieceImages()
   # init the board
   Board = [[None for x in range(8)] for y in range(8)]
   resetBoard()

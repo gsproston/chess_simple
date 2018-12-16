@@ -15,7 +15,7 @@ KING_ENUM = 5
 # array of loaded chess piece images
 PieceImages = [[None for x in range(6)] for y in range(2)]
 
-def LoadPieceImages():
+def loadPieceImages():
   for i in range(2):
     if (i == BLACK_ENUM):
       imageFileName = "dt60.png"
