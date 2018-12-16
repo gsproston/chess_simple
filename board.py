@@ -46,31 +46,31 @@ class Square:
       self.piece = p.King(colour)
 
 # draws a section of the board, with a piece if applicable
-def drawSquare(i, j):
+def drawSquare(x, y):
   screen = pygame.display.get_surface() 
   # get the offsets
   offsetw = (screen.get_width() - SQUARE_SIZE*8) / 2
   offseth = (screen.get_height() - SQUARE_SIZE*8) / 2
   # get the rectangle
-  gridRect = pygame.Rect(i*SQUARE_SIZE+offsetw,
-    j*SQUARE_SIZE+offseth,SQUARE_SIZE,SQUARE_SIZE)
+  gridRect = pygame.Rect(x*SQUARE_SIZE+offsetw,
+    y*SQUARE_SIZE+offseth,SQUARE_SIZE,SQUARE_SIZE)
   # draw the grid
-  if (Board[i][j].status == SELECTED_ENUM):
+  if (Board[x][y].status == SELECTED_ENUM):
     pygame.draw.rect(screen, (255,255,0), gridRect)
-  elif (Board[i][j].status == INRANGE_ENUM):
+  elif (Board[x][y].status == INRANGE_ENUM):
     pygame.draw.rect(screen, (0,255,255), gridRect)
-  elif (Board[i][j].status == THREATENDED_ENUM):
+  elif (Board[x][y].status == THREATENDED_ENUM):
     pygame.draw.rect(screen, (255,0,0), gridRect)
-  elif ((i + j) % 2 == 1):
+  elif ((x + y) % 2 == 1):
     pygame.draw.rect(screen, (150,150,150), gridRect)
   else:
     pygame.draw.rect(screen, (255,255,255), gridRect)
   pygame.draw.rect(screen, (0,0,0), gridRect, 1)
   
-  if (Board[i][j].piece != None):
+  if (Board[x][y].piece != None):
     # draw the piece
-    colour = Board[i][j].piece.iColour
-    piece = Board[i][j].piece.iPiece
+    colour = Board[x][y].piece.iColour
+    piece = Board[x][y].piece.iPiece
     pygame.Surface.blit(screen, p.PieceImages[colour][piece], gridRect)
   pygame.display.update(gridRect)
 
@@ -114,32 +114,32 @@ def movePiece(x, y):
         Board[i][j].piece = None
         clearHighlighting()
   
-def squareClicked(i, j):
+def squareClicked(x, y):
   global Board
-  if (Board[i][j].status == SELECTED_ENUM):
+  if (Board[x][y].status == SELECTED_ENUM):
     # square already selected, deselect
-    Board[i][j].status = NONE_ENUM
-  elif (Board[i][j].status == INRANGE_ENUM):
+    Board[x][y].status = NONE_ENUM
+  elif (Board[x][y].status == INRANGE_ENUM):
     # moves the selected piece to this square
-    movePiece(i,j)
-  elif (Board[i][j].piece != None and
-    Board[i][j].piece.iColour == 1):
+    movePiece(x,y)
+  elif (Board[x][y].piece != None and
+    Board[x][y].piece.iColour == 1):
     # deselect any old squares
     clearHighlighting()
     # select this one
-    Board[i][j].status = SELECTED_ENUM
+    Board[x][y].status = SELECTED_ENUM
     
     # get the list of moves
-    for coord in Board[i][j].piece.getMoves(i, j, Board):
-      x = coord[0]
-      y = coord[1]
-      if (Board[x][y].piece == None):
-        Board[x][y].status = INRANGE_ENUM
+    for coord in Board[x][y].piece.getMoves(x, y, Board):
+      xpos = coord[0]
+      ypos = coord[1]
+      if (Board[xpos][ypos].piece == None):
+        Board[xpos][ypos].status = INRANGE_ENUM
       else:
-        Board[x][y].status = THREATENDED_ENUM
-      drawSquare(x,y)
+        Board[xpos][ypos].status = THREATENDED_ENUM
+      drawSquare(xpos,ypos)
   
-  drawSquare(i, j)
+  drawSquare(x, y)
   
 def initBoard():
   global Board
