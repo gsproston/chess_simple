@@ -149,6 +149,7 @@ def takeTurn():
   m = ai.getBestMove(Board)
   if (m == None):
     return False
+  Board[m.x][m.y].piece.bMoved = True
   Board[m.movex][m.movey].piece = Board[m.x][m.y].piece
   Board[m.x][m.y].piece = None
   drawSquare(m.x, m.y)
